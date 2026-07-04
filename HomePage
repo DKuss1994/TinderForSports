@@ -1,0 +1,608 @@
+import '/auth/firebase_auth/auth_util.dart';
+import '/backend/backend.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:ui';
+import '/index.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import 'home_page_model.dart';
+export 'home_page_model.dart';
+
+class HomePageWidget extends StatefulWidget {
+  const HomePageWidget({super.key});
+
+  static String routeName = 'HomePage';
+  static String routePath = '/homePage';
+
+  @override
+  State<HomePageWidget> createState() => _HomePageWidgetState();
+}
+
+class _HomePageWidgetState extends State<HomePageWidget> {
+  late HomePageModel _model;
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _model = createModel(context, () => HomePageModel());
+  }
+
+  @override
+  void dispose() {
+    _model.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          automaticallyImplyLeading: false,
+          actions: [],
+          centerTitle: false,
+          elevation: 2,
+        ),
+        body: SafeArea(
+          top: true,
+          child: Align(
+            alignment: AlignmentDirectional(0, -1),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional(0, 0),
+                    child: Text(
+                      'SPORTFLIX',
+                      style:
+                          FlutterFlowTheme.of(context).headlineLarge.override(
+                                fontFamily: FlutterFlowTheme.of(context)
+                                    .headlineLargeFamily,
+                                color: FlutterFlowTheme.of(context).secondary,
+                                letterSpacing: 2,
+                                useGoogleFonts: !FlutterFlowTheme.of(context)
+                                    .headlineLargeIsCustom,
+                              ),
+                    ),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional(0, 0),
+                    child: AuthUserStreamWidget(
+                      builder: (context) => Text(
+                        'Welcome ${currentUserDisplayName}',
+                        style:
+                            FlutterFlowTheme.of(context).headlineLarge.override(
+                                  fontFamily: FlutterFlowTheme.of(context)
+                                      .headlineLargeFamily,
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                  letterSpacing: 0.0,
+                                  useGoogleFonts: !FlutterFlowTheme.of(context)
+                                      .headlineLargeIsCustom,
+                                ),
+                      ),
+                    ),
+                  ),
+                  if ((currentUserDocument?.listLikeSports?.toList() ?? [])
+                          .length >
+                      0)
+                    AuthUserStreamWidget(
+                      builder: (context) => Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(5, 0, 0, 5),
+                            child: Text(
+                              'My List',
+                              style: FlutterFlowTheme.of(context)
+                                  .labelLarge
+                                  .override(
+                                    fontFamily: FlutterFlowTheme.of(context)
+                                        .labelLargeFamily,
+                                    color:
+                                        FlutterFlowTheme.of(context).alternate,
+                                    letterSpacing: 0.0,
+                                    useGoogleFonts:
+                                        !FlutterFlowTheme.of(context)
+                                            .labelLargeIsCustom,
+                                  ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.15,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                  ),
+                                  child: Builder(
+                                    builder: (context) {
+                                      final myList = (currentUserDocument
+                                                  ?.listLikeSports
+                                                  ?.toList() ??
+                                              [])
+                                          .toList();
+
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: myList.length,
+                                        itemBuilder: (context, myListIndex) {
+                                          final myListItem =
+                                              myList[myListIndex];
+                                          return Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    5, 0, 5, 0),
+                                            child: StreamBuilder<SportsRecord>(
+                                              stream: SportsRecord.getDocument(
+                                                  myListItem),
+                                              builder: (context, snapshot) {
+                                                // Customize what your widget looks like when it's loading.
+                                                if (!snapshot.hasData) {
+                                                  return Center(
+                                                    child: SizedBox(
+                                                      width: 50,
+                                                      height: 50,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                Color>(
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primary,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+
+                                                final imageSportsRecord =
+                                                    snapshot.data!;
+
+                                                return InkWell(
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  focusColor:
+                                                      Colors.transparent,
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () async {
+                                                    context.pushNamed(
+                                                      SportDetailsWidget
+                                                          .routeName,
+                                                      queryParameters: {
+                                                        'referenceSports':
+                                                            serializeParam(
+                                                          imageSportsRecord
+                                                              .reference,
+                                                          ParamType
+                                                              .DocumentReference,
+                                                        ),
+                                                      }.withoutNulls,
+                                                    );
+                                                  },
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    child: Image.network(
+                                                      imageSportsRecord.image,
+                                                      width: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .width *
+                                                          0.25,
+                                                      height: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .height *
+                                                          0.5,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'All Sports',
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                                fontFamily: FlutterFlowTheme.of(context)
+                                    .bodyMediumFamily,
+                                color: FlutterFlowTheme.of(context).alternate,
+                                fontSize: 16,
+                                letterSpacing: 0.0,
+                                useGoogleFonts: !FlutterFlowTheme.of(context)
+                                    .bodyMediumIsCustom,
+                              ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.15,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                ),
+                                child: StreamBuilder<List<SportsRecord>>(
+                                  stream: querySportsRecord(),
+                                  builder: (context, snapshot) {
+                                    // Customize what your widget looks like when it's loading.
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              FlutterFlowTheme.of(context)
+                                                  .primary,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    List<SportsRecord>
+                                        listViewSportsRecordList =
+                                        snapshot.data!;
+
+                                    return ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          listViewSportsRecordList.length,
+                                      itemBuilder: (context, listViewIndex) {
+                                        final listViewSportsRecord =
+                                            listViewSportsRecordList[
+                                                listViewIndex];
+                                        return Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  5, 0, 5, 0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                SportDetailsWidget.routeName,
+                                                queryParameters: {
+                                                  'referenceSports':
+                                                      serializeParam(
+                                                    listViewSportsRecord
+                                                        .reference,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.network(
+                                                listViewSportsRecord.image,
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        0.25,
+                                                height:
+                                                    MediaQuery.sizeOf(context)
+                                                            .height *
+                                                        0.5,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Solo',
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                                fontFamily: FlutterFlowTheme.of(context)
+                                    .bodyMediumFamily,
+                                color: FlutterFlowTheme.of(context).alternate,
+                                fontSize: 16,
+                                letterSpacing: 0.0,
+                                useGoogleFonts: !FlutterFlowTheme.of(context)
+                                    .bodyMediumIsCustom,
+                              ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.15,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                ),
+                                child: StreamBuilder<List<SportsRecord>>(
+                                  stream: querySportsRecord(
+                                    queryBuilder: (sportsRecord) =>
+                                        sportsRecord.where(
+                                      'isTeamSport',
+                                      isEqualTo: false,
+                                    ),
+                                  ),
+                                  builder: (context, snapshot) {
+                                    // Customize what your widget looks like when it's loading.
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              FlutterFlowTheme.of(context)
+                                                  .primary,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    List<SportsRecord>
+                                        listViewSportsRecordList =
+                                        snapshot.data!;
+
+                                    return ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          listViewSportsRecordList.length,
+                                      itemBuilder: (context, listViewIndex) {
+                                        final listViewSportsRecord =
+                                            listViewSportsRecordList[
+                                                listViewIndex];
+                                        return Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  5, 0, 5, 0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                SportDetailsWidget.routeName,
+                                                queryParameters: {
+                                                  'referenceSports':
+                                                      serializeParam(
+                                                    listViewSportsRecord
+                                                        .reference,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.network(
+                                                listViewSportsRecord.image,
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        0.25,
+                                                height:
+                                                    MediaQuery.sizeOf(context)
+                                                            .height *
+                                                        0.5,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Team',
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                                fontFamily: FlutterFlowTheme.of(context)
+                                    .bodyMediumFamily,
+                                color: FlutterFlowTheme.of(context).alternate,
+                                fontSize: 16,
+                                letterSpacing: 0.0,
+                                useGoogleFonts: !FlutterFlowTheme.of(context)
+                                    .bodyMediumIsCustom,
+                              ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.15,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                ),
+                                child: StreamBuilder<List<SportsRecord>>(
+                                  stream: querySportsRecord(
+                                    queryBuilder: (sportsRecord) =>
+                                        sportsRecord.where(
+                                      'isTeamSport',
+                                      isEqualTo: true,
+                                    ),
+                                  ),
+                                  builder: (context, snapshot) {
+                                    // Customize what your widget looks like when it's loading.
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              FlutterFlowTheme.of(context)
+                                                  .primary,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    List<SportsRecord>
+                                        listViewSportsRecordList =
+                                        snapshot.data!;
+
+                                    return ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          listViewSportsRecordList.length,
+                                      itemBuilder: (context, listViewIndex) {
+                                        final listViewSportsRecord =
+                                            listViewSportsRecordList[
+                                                listViewIndex];
+                                        return Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  5, 0, 5, 0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                SportDetailsWidget.routeName,
+                                                queryParameters: {
+                                                  'referenceSports':
+                                                      serializeParam(
+                                                    listViewSportsRecord
+                                                        .reference,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.network(
+                                                listViewSportsRecord.image,
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        0.25,
+                                                height:
+                                                    MediaQuery.sizeOf(context)
+                                                            .height *
+                                                        0.5,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
